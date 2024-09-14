@@ -39,6 +39,7 @@
 #define DSOS_CALL_CLOSE_RESOURCE 8
 #define DSOS_CALL_DESTROY_RESOURCE 9
 #define DSOS_CALL_SHUTDOWN  10
+#define DSOS_CALL_EXEC 2
 
 //resources
 #define DSOS_CREATE 0x1

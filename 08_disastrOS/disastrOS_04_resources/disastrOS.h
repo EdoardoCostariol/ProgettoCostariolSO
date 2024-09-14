@@ -31,6 +31,9 @@ void disastrOS_shutdown();
 // timers
 void disastrOS_sleep(int);
 
+//exec
+void disastOS_exec(const char* filename, const char* func_name, void* args);
+
 // respurces (files)
 int disastrOS_openResource(int resource_id, int type, int mode);
 int disastrOS_closeResource(int fd) ;
@@ -38,3 +41,9 @@ int disastrOS_destroyResource(int resource_id);
 
 // debug function, prints the state of the internal system
 void disastrOS_printStatus();
+
+// Codici di errore syscall
+#define DSOS_ESYSCALL_OUT_OF_RANGE   -1
+#define DSOS_ESYSCALL_NOT_IMPLEMENTED -2
+#define DSOS_ESYSCALL_EXEC_FAILED    -3
+

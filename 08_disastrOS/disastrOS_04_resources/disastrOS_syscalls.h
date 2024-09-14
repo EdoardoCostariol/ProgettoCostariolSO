@@ -15,6 +15,8 @@ void internal_spawn();
 
 void internal_shutdown();
 
+void internal_exec();
+
 void internal_schedule();
 
 void internal_sleep();
