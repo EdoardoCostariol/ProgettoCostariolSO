@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include "disastrOS.h"
 #include "disastrOS_syscalls.h"
 

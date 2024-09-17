@@ -178,7 +178,7 @@ void disastrOS_start(void (*f)(void*), void* f_args, char* logfile){
   syscall_numarg[DSOS_CALL_SHUTDOWN]      = 0;
 
   syscall_vector[DSOS_CALL_EXEC] = internal_exec;
-  syscall_numarg[DSOS_CALL_EXEC] = 2;  // filename, func_name, args
+  syscall_numarg[DSOS_CALL_EXEC] = 3;  // filename, func_name, args
 
 
   // setup the scheduling lists
@@ -272,7 +272,7 @@ void disastrOS_sleep(int sleep_time) {
   disastrOS_syscall(DSOS_CALL_SLEEP, sleep_time);
 }
 
-void disastOS_exec(const char* filename, const char* func_name, void* args){
+void disastrOS_exec(const char* filename, const char* func_name, void* args){
   disastrOS_syscall(DSOS_CALL_EXEC, filename,func_name,args);
 }
 

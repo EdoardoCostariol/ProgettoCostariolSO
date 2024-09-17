@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "new_function.h": "c",
+        "time.h": "c"
+    }
+}
