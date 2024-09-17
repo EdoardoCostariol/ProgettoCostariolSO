@@ -32,11 +32,19 @@ void internal_exec() {
         return;
     }
 
-    // chiamo la funzione dallo shared object
-    disastrOS_debug("internal_exec: calling function %s from shared object %s\n", func_name, filename);
-    (*func)(args);
+    disastrOS_debug("internal_exec: successfully loaded function '%s' from shared object '%s'\n", func_name, filename);
 
-    dlclose(handle);
+    printf("Processo %d: eseguo exec per avviare la funzione '%s' dal file '%s'\n", disastrOS_getpid(), func_name, filename);
 
+    //modifico il contesto per eseguire la nuova funzione
+    getcontext(&running->cpu_state);
+    running->cpu_state.uc_stack.ss_sp=running->stack;
+    running->cpu_state.uc_stack.ss_size=STACK_SIZE;
+    running->cpu_state.uc_stack.ss_flags=0;
+    sigemptyset(&running->cpu_state.uc_sigmask);
+    makecontext(&running->cpu_state,(void(*)(void))func,1,args);
+    
     running->syscall_retvalue = 0;
+
+    printf("Processo %d: exec completato, ora eseguo la nuova funzione '%s'.\n", disastrOS_getpid(), func_name);
 }
