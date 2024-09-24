@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "new_function.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "disastros_syscalls.h": "c"
     }
 }

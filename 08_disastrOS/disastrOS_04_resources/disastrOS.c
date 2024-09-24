@@ -135,6 +135,11 @@ void disastrOS_trap(){
 }
 
 void disastrOS_start(void (*f)(void*), void* f_args, char* logfile){  
+
+  if (!f) {
+    printf("Error: the function pointer f is NULL.\n");
+    exit(1);
+  }
   /* INITIALIZATION OF SYSTEM STRUCTURES*/
   disastrOS_debug("initializing system structures\n");
   PCB_init();
@@ -218,6 +223,10 @@ void disastrOS_start(void (*f)(void*), void* f_args, char* logfile){
 
   /* STARTING FIRST PROCESS AND IDLING*/
   running=PCB_alloc();
+  if (!running) {
+    printf("Error: could not allocate PCB for the first process.\n");
+    exit(1);
+  }
   running->status=Running;
   init_pcb=running;
   

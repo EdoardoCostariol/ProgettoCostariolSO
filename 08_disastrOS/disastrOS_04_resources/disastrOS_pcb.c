@@ -21,7 +21,7 @@ static PoolAllocator _pcb_allocator;
 static char _pcb_ptr_buffer[PCBPTR_BUFFER_SIZE];
 static PoolAllocator _pcb_ptr_allocator;
 
-
+int current_num_processes = 0;
 
 void PCB_init(){
     int result=PoolAllocator_init(& _pcb_allocator,
@@ -30,6 +30,10 @@ void PCB_init(){
 				  _pcb_buffer,
 				  PCB_BUFFER_SIZE);
     assert(! result);
+
+    if (result) {
+        printf("Error initializing PCB pool allocator\n");
+    }
 
     result=PoolAllocator_init(& _pcb_ptr_allocator,
 			      PCBPTR_SIZE,
@@ -41,6 +45,11 @@ void PCB_init(){
 
 PCB* PCB_alloc() {
   PCB* pcb = (PCB*) PoolAllocator_getBlock(&_pcb_allocator);
+  if (!pcb) {
+      printf("Errore: allocazione PCB fallita\n");
+      return NULL;
+  }
+  current_num_processes++;
   pcb->list.prev=0;
   pcb->list.next=0;
   pcb->pid=last_pid; last_pid++;
@@ -58,6 +67,7 @@ PCB* PCB_alloc() {
 }
 
 int PCB_free(PCB* pcb){
+  current_num_processes--;
   return PoolAllocator_releaseBlock(&_pcb_allocator, pcb);
 }
 

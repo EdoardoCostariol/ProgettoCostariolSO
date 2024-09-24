@@ -65,9 +65,9 @@ void internal_exit(){
       TimerItem* timer=(TimerItem*) aux;
       aux=aux->next;
       if (timer->pcb==running){
-	ListItem* detach_result=List_detach(&timer_list, (ListItem*)timer);
-	assert(detach_result);
-	TimerItem_free(timer);
+        ListItem* detach_result=List_detach(&timer_list, (ListItem*)timer);
+        assert(detach_result);
+        TimerItem_free(timer);
       }
     }
 
