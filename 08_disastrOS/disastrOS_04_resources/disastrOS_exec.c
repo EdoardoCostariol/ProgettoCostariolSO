@@ -6,6 +6,10 @@
 #include "disastrOS_syscalls.h"
 
 void internal_exec() {
+    //mi salvo il contesto per ripartire da qui dopo l'esecuzione della exec
+    ucontext_t context_before_exec;
+    getcontext(&context_before_exec);  
+
     const char* filename = (const char*) running->syscall_args[0];
     const char* func_name = (const char*) running->syscall_args[1];
     void* args = (void*) running->syscall_args[2];
@@ -37,15 +41,26 @@ void internal_exec() {
 
     printf("Processo %d: eseguo exec per avviare la funzione '%s' dal file '%s'\n", disastrOS_getpid(), func_name, filename);
 
+    // salvo lo stato corrente per riprendere l'esecuzione dopo la exec
+    ucontext_t return_context;
+    getcontext(&return_context);  
+
     //modifico il contesto per eseguire la nuova funzione
-    getcontext(&running->cpu_state);
-    running->cpu_state.uc_stack.ss_sp=running->stack;
-    running->cpu_state.uc_stack.ss_size=STACK_SIZE;
-    running->cpu_state.uc_stack.ss_flags=0;
-    sigemptyset(&running->cpu_state.uc_sigmask);
-    makecontext(&running->cpu_state,(void(*)(void))func,1,args);
+    return_context.uc_stack.ss_sp = running->stack;  
+    return_context.uc_stack.ss_size = STACK_SIZE;
+    return_context.uc_stack.ss_flags = 0;
+    sigemptyset(&return_context.uc_sigmask);
+    return_context.uc_link = &running->cpu_state; 
     
-    running->syscall_retvalue = 0;
 
     printf("Processo %d: exec completato, ora eseguo la nuova funzione '%s'.\n", disastrOS_getpid(), func_name);
+
+    //preparo il contesto per eseguire la funzione
+    makecontext(&return_context, (void(*)(void))func, 1, args);
+    running->cpu_state = return_context;
+    setcontext(&running->cpu_state);
+
+    dlclose(handle);
+    running->syscall_retvalue = 0;
+
 }

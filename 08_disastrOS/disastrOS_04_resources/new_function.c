@@ -2,7 +2,7 @@
 
 // Funzione che verrà chiamata con exec
 int myFunction(void *args) {
-    printf("sto a fa exec \n");
+    printf("Eseguo myFunction e ritorno all'esecuzione del programma dopo la chiamata alla exec \n");
     return 0;
 }
 

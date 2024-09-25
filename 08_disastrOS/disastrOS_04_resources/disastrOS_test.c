@@ -23,7 +23,10 @@ void childFunction(void* args){
   printf("PID: %d, terminating\n", disastrOS_getpid());
 
   //invocazione della exec
-  disastrOS_exec("./libnewfunction.so","myFunction",args);
+  if(!vfork()){
+    disastrOS_exec("./libnewfunction.so","myFunction",args);
+    disastrOS_exit(0);
+  }
 
   // for (int i=0; i<(disastrOS_getpid()+1); ++i){
   //   printf("PID: %d, iterate %d\n", disastrOS_getpid(), i);

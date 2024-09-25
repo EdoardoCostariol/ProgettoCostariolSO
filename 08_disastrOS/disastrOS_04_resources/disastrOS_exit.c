@@ -13,6 +13,14 @@
 // parent should receive SIGCHLD and be awakened if it was waiting
 // for this process to report its value
 void internal_exit(){
+
+  // printf("Exiting process: %d\n", disastrOS_getpid());
+  // if (!running->parent) {
+  //       printf("No parent found for process %d\n", disastrOS_getpid());
+  //       return;
+  // }
+  // printf("Parent process found: %d\n", running->parent->pid);
+
   // 2nd register in pcb contains the exit value
   running->return_value=running->syscall_args[0];
     
@@ -34,8 +42,9 @@ void internal_exit(){
 
   running->status=Zombie;
   List_insert(&zombie_list, zombie_list.last, (ListItem*) running);
-  running->parent->signals |= (DSOS_SIGCHLD & running->parent->signals_mask);
-
+  if (running->parent) {
+    running->parent->signals |= (DSOS_SIGCHLD & running->parent->signals_mask);
+  }
   // if the parent was waiting for this process to die
   if (running->parent->status==Waiting
   // since he called  wait or waitpid, we wake him up

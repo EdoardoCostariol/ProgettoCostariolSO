@@ -119,13 +119,13 @@ void disastrOS_trap(){
   disastrOS_debug("syscall: %d, pid: %d\n", syscall_num, running->pid);
   (*my_syscall)();
   //internal_schedule();
- return_to_process:
+  return_to_process:
   if (log_file)
     fprintf(log_file, "TIME: %d\tPID: %d\tACTION: %s %d\n",
-	    disastrOS_time,
-	    running->pid,
-	    "SYSCALL_OUT",
-	    syscall_num);
+	  disastrOS_time,
+	  running->pid,
+	  "SYSCALL_OUT",
+	  syscall_num);
   if (running)
     setcontext(&running->cpu_state);
   else {
