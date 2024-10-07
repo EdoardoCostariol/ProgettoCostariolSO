@@ -2,6 +2,8 @@
     "files.associations": {
         "new_function.h": "c",
         "time.h": "c",
-        "disastros_syscalls.h": "c"
-    }
+        "disastros_syscalls.h": "c",
+        "dlfcn.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

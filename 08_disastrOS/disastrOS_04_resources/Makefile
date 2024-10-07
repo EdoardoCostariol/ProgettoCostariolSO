@@ -57,8 +57,9 @@ disastrOS_test: disastrOS_test.c $(LIBS) $(SHARED_LIBS)
 	$(CC) $(CCOPTS) -o $@ $^
 
 # Regola per creare la libreria condivisa (.so)
-libnewfunction.so: new_function.o  # Puoi aggiungere altri file oggetto se necessario
-	$(CC) $(LDFLAGS) -o $@ $^
+libnewfunction.so: new_function.o libdisastrOS.a
+	$(CC) $(LDFLAGS) -o $@ $^ -L. -ldisastrOS
+
 
 # Compilazione di new_function.c in file oggetto (.o)
 new_function.o: new_function.c

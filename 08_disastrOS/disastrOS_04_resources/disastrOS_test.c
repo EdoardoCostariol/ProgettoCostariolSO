@@ -3,6 +3,7 @@
 #include <poll.h>
 #include "disastrOS_globals.h"
 #include "disastrOS.h"
+#include "new_function.h"
 
 // we need this to handle the sleep state
 void sleeperFunction(void* args){
@@ -22,11 +23,13 @@ void childFunction(void* args){
   printf("fd=%d\n", fd);
   printf("PID: %d, terminating\n", disastrOS_getpid());
 
+
   //invocazione della exec
-  if(!vfork()){
-    disastrOS_exec("./libnewfunction.so","myFunction",args);
-    disastrOS_exit(0);
-  }
+  FunctionArgs *functionArgs = malloc(sizeof(FunctionArgs));
+  functionArgs->a = 5;
+  functionArgs->b = 10;
+  disastrOS_exec("./libnewfunction.so","myFunction",functionArgs);
+  disastrOS_exit(0);
 
   // for (int i=0; i<(disastrOS_getpid()+1); ++i){
   //   printf("PID: %d, iterate %d\n", disastrOS_getpid(), i);
