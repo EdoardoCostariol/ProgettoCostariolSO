@@ -16,8 +16,7 @@
 #include <poll.h>
 #include "disastrOS_globals.h"
 
-void myFunction(void *args, PCB* pcb) {
-    running = pcb;
+void myFunction(void *args) {
 
     printf("Sto eseguendo il processo con pid: %d\n", disastrOS_getpid());
 

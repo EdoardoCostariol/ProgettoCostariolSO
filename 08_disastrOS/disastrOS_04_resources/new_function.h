@@ -11,4 +11,4 @@
 
 
 
-void myFunction(void* args,PCB* pcb);
+void myFunction(void* args);

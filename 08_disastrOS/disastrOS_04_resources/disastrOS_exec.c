@@ -52,7 +52,7 @@ void internal_exec() {
 
     printf("Switching to new context with PID %d\n", new_pcb->pid);
     
-    makecontext(&new_pcb->cpu_state, (void(*)(void))func, 2, args, new_pcb);
+    makecontext(&new_pcb->cpu_state, (void(*)(void))func, 1, args);
 
     new_pcb->status = Running;
     running->status = Suspended;  // Metti in stato sospeso il processo corrente
