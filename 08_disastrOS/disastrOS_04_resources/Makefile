@@ -1,7 +1,7 @@
 CC = gcc
-CCOPTS = --std=gnu99 -Wall -fPIC  # Aggiunto -fPIC per compilare codice indipendente dalla posizione (necessario per le librerie dinamiche)
+CCOPTS = --std=gnu99 -Wall -fPIC  # Aggiunto -fPIC per le librerie dinamiche
 AR = ar
-LDFLAGS = -shared  # Flag per creare una libreria condivisa
+LDFLAGS = -shared  # Flag per creare librerie condivise
 
 HEADERS = disastrOS.h\
 	disastrOS_constants.h\
@@ -34,32 +34,27 @@ OBJS = pool_allocator.o\
        disastrOS_destroy_resource.o\
        disastrOS_exec.o
 
-LIBS = libdisastrOS.a  # Libreria statica
-SHARED_LIBS = libnewfunction.so  # Libreria dinamica
-
 BINS = disastrOS_test
 
 .phony: clean all
 
-all: $(LIBS) $(SHARED_LIBS) $(BINS)
+all: libdisastrOS.so libnewfunction.so $(BINS)
 
 # Regola per creare file oggetto (.o) dai file sorgente (.c)
 %.o: %.c $(HEADERS)
 	$(CC) $(CCOPTS) -c -o $@ $<
 
-# Regola per creare la libreria statica (.a)
-libdisastrOS.a: $(OBJS) $(HEADERS)
-	$(AR) -rcs $@ $^
-	$(RM) $(OBJS)
+# Regola per creare la libreria dinamica principale (libdisastrOS.so)
+libdisastrOS.so: $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
 
 # Regola per creare il binario principale (disastrOS_test)
-disastrOS_test: disastrOS_test.c $(LIBS) $(SHARED_LIBS)
-	$(CC) $(CCOPTS) -o $@ $^
+disastrOS_test: disastrOS_test.c libdisastrOS.so
+	$(CC) $(CCOPTS) -o $@ $^ -L. -ldisastrOS
 
-# Regola per creare la libreria condivisa (.so)
-libnewfunction.so: new_function.o libdisastrOS.a
+# Regola per creare la libreria condivisa (libnewfunction.so)
+libnewfunction.so: new_function.o libdisastrOS.so
 	$(CC) $(LDFLAGS) -o $@ $^ -L. -ldisastrOS
-
 
 # Compilazione di new_function.c in file oggetto (.o)
 new_function.o: new_function.c
@@ -67,4 +62,4 @@ new_function.o: new_function.c
 
 # Regola per pulire i file generati
 clean:
-	rm -rf *.o *~ $(LIBS) $(BINS) $(SHARED_LIBS)
+	rm -rf *.o *~ $(BINS) *.so

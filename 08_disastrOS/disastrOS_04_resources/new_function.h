@@ -9,9 +9,6 @@
 #include <stdlib.h>
 #include <signal.h>
 
-typedef struct {
-    int a;
-    int b;
-} FunctionArgs;
 
-void myFunction(void* args);
+
+void myFunction(void* args,PCB* pcb);

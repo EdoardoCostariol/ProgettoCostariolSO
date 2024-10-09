@@ -20,7 +20,7 @@ void internal_exec() {
         return;
     }
     
-    typedef void (*func_type)(void*);
+    typedef void (*func_type)(void*, PCB*);
     func_type func = (func_type)dlsym(handle, func_name);
    
     if (!func) {
@@ -30,8 +30,7 @@ void internal_exec() {
         return;
     }
     disastrOS_debug("internal_exec: successfully loaded function '%s' from shared object '%s'\n", func_name, filename);
-
-    running->status = Zombie; 
+    running->status=Zombie;
 
     PCB* new_pcb = PCB_alloc();
     if (!new_pcb) {
@@ -50,11 +49,20 @@ void internal_exec() {
     new_pcb->cpu_state.uc_stack.ss_flags = 0; 
     new_pcb->cpu_state.uc_link = NULL; // imposto uguale a NULL per evitare che torni all'esecuzione del main
 
-    new_pcb->status = Running;
-    
-    makecontext(&new_pcb->cpu_state, (void(*)(void))func, 1, args);
 
-    setcontext(&new_pcb->cpu_state);
+    printf("Switching to new context with PID %d\n", new_pcb->pid);
+    
+    makecontext(&new_pcb->cpu_state, (void(*)(void))func, 2, args, new_pcb);
+
+    new_pcb->status = Running;
+    running->status = Suspended;  // Metti in stato sospeso il processo corrente
+    running = new_pcb;
+    printf("Running process PID: %d\n", running->pid);
+    
+
+    setcontext(&running->cpu_state);
+
+    fprintf(stderr, "Error: setcontext should not return!\n");
 
     dlclose(handle);
 }
