@@ -16,7 +16,7 @@ void internal_exec() {
     void* handle = dlopen(filename, RTLD_NOW);
     if (!handle) {
         fprintf(stderr, "Error loading library: %s\n", dlerror());
-        running->syscall_retvalue = DSOS_ESYSCALL_EXEC_FAILED; // Indica errore
+        running->syscall_retvalue = DSOS_ESYSCALL_EXEC_FAILED;
         return;
     }
     
@@ -26,7 +26,7 @@ void internal_exec() {
     if (!func) {
         fprintf(stderr, "Function %s not found: %s\n", func_name, dlerror());
         dlclose(handle);
-        running->syscall_retvalue = DSOS_ESYSCALL_EXEC_FAILED; // Indica errore
+        running->syscall_retvalue = DSOS_ESYSCALL_EXEC_FAILED; 
         return;
     }
     disastrOS_debug("internal_exec: successfully loaded function '%s' from shared object '%s'\n", func_name, filename);
@@ -38,7 +38,7 @@ void internal_exec() {
         exit(1);
     }
 
-    // Configurao il nuovo contesto
+    // Configuro il nuovo contesto
     if (getcontext(&new_pcb->cpu_state) == -1) {
         perror("getcontext failed");
         return;
@@ -50,15 +50,13 @@ void internal_exec() {
     new_pcb->cpu_state.uc_link = NULL; // imposto uguale a NULL per evitare che torni all'esecuzione del main
 
 
-    printf("Switching to new context with PID %d\n", new_pcb->pid);
+    printf("Switching to new context with PID %d with pseudo exec\n", new_pcb->pid);
     
     makecontext(&new_pcb->cpu_state, (void(*)(void))func, 1, args);
 
     new_pcb->status = Running;
     running->status = Suspended;  // Metti in stato sospeso il processo corrente
-    running = new_pcb;
-    printf("Running process PID: %d\n", running->pid);
-    
+    running = new_pcb;  
 
     setcontext(&running->cpu_state);
 

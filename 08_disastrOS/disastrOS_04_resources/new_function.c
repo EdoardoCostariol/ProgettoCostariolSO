@@ -18,7 +18,7 @@
 
 void myFunction(void *args) {
 
-    printf("Sto eseguendo il processo con pid: %d\n", disastrOS_getpid());
+    printf("Running process PID: %d\n", disastrOS_getpid());
 
     //definizione della risorsa
     int resource_id = 1;
@@ -27,22 +27,19 @@ void myFunction(void *args) {
 
     int fd = disastrOS_openResource(resource_id, resource_type, mode);
     if (fd < 0) {
-        printf("Errore nell'apertura della risorsa con ID %d e tipo %d\n", resource_id, resource_type);
-        printf("Codice di errore: %d\n", fd);
+        printf("Error opening resource with ID %d and type %d\n", resource_id, resource_type);
+        printf("Error code: %d\n", fd);
         return;
     } else {
-        printf("Risorsa %d aperta con file descriptor %d\n", resource_id, fd);
+        printf("Resource %d opened with file descriptor %d\n", resource_id, fd);
     }
-
-    printf("Sleep per 5 secondi...\n");
-    disastrOS_sleep(5);
 
     int close_res = disastrOS_closeResource(fd);
     if (close_res < 0) {
-        printf("Errore nella chiusura della risorsa con file descriptor %d\n", fd);
+        printf("Error closing resource with file descriptor%d\n", fd);
     } else {
-        printf("Risorsa con file descriptor %d chiusa con successo\n", fd);
+        printf("Resource with file descriptor %d closed successfully\n", fd);
     }
 
-    printf("Processo terminato\n");
+    printf("Process finished\n");
 }
